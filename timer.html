@@ -8,6 +8,9 @@
     * + * {
       margin-top: 1rem;
     }
+    .hidden{
+      display:none;
+    }
     body {
       font-size:16px;
       margin:auto;
@@ -108,7 +111,7 @@
 
   <div class="timer_states">
     <button id="save_state">Save state</button>
-    <button id="reset_last">Reset to last state</button>
+    <button id="reset_last" class="hidden">Reset to last state</button>
     <p>Last state : <span id="last_state_display"></span></p>
   </div>
 
@@ -121,6 +124,7 @@
 <script type="text/javascript">
 var timer = new Timer();
 
+// Setup buttons
 document.getElementById("start").addEventListener('click', function(e){
   timer.start();
 });
@@ -133,26 +137,35 @@ document.getElementById("reset_last").addEventListener('click', function(e){
 document.getElementById("save_state").addEventListener('click', function(e){
   timer.save_state();
 });
-
+// Setup time change buttons
 document.querySelectorAll(".js_change_time").forEach(function(btn){
   btn.addEventListener('click', function(e){
     timer.change_time(parseInt(e.currentTarget.getAttribute("data-time-increment")));
   });
 });
+// Setup set time buttons
 document.querySelectorAll(".js_set_time").forEach(function(btn){
   btn.addEventListener('click', function(e){
     timer.set_time(parseInt(e.currentTarget.getAttribute("data-time")));
   });
 });
 
+// The main timer
 function Timer(){
+  // The timer interval
   this.timer = null,
+  // The current time in seconds
   this.time = 0,
+  // The last saved state
   this.last_state = null,
+  // Is the timer running
   this.running = false,
+  // Initialize the timer and its buttons
   this.init = function(){
     this.set_time(0);
+    this.toggle_state_button(false);
   },
+  // Start the timer
   this.start = function(){
     if (!this.running && this.time > 0) {
       this.set_timer();
@@ -160,6 +173,7 @@ function Timer(){
       document.getElementById("running_display").innerHTML = this.running;
     }
   },
+  // Stop the timer
   this.stop = function(){
     if (this.time) {
       clearInterval(this.timer);
@@ -168,31 +182,56 @@ function Timer(){
     this.running = false;
     document.getElementById("running_display").innerHTML = this.running;
   },
+  // Save the current state
   this.save_state = function(){
     this.last_state = this.time;
-    console.log("last_state", this.last_state);
+    //console.log("last_state", this.last_state);
 
     var [minutes, seconds] = this.calculate_time(this.last_state);
     document.getElementById("last_state_display").innerHTML = "" + minutes + ":" + seconds;
+    this.toggle_state_button(true);
   },
+  // Reset to the last saved state
   this.reset_last = function(){
-    console.log("last_state", this.last_state);
-    if (this.last_state) {
+    //console.log("last_state", this.last_state);
+    if (this.last_state !== null) {
+      this.stop();
       this.time = this.last_state;
       this.display_time();
     }
   },
+  // Toggle display for the state button
+  this.toggle_state_button = function(state = null){
+    var reset_last_btn = document.getElementById("reset_last");
+    if (state !== null) {
+      if (state === true && reset_last_btn.classList.contains("hidden")) {
+        reset_last_btn.classList.remove("hidden");
+      }
+      if (state === false && !reset_last_btn.classList.contains("hidden")) {
+        reset_last_btn.classList.add("hidden");
+      }
+    } else {
+      if (reset_last_btn.classList.contains("hidden")) {
+        reset_last_btn.classList.remove("hidden");
+      } else {
+        reset_last_btn.classList.add("hidden");
+      }
+    }
+  },
+  // Change the time
   this.change_time = function(time_increment = 0){
     this.time += time_increment;
-    console.log("current time : ", this.time);
+    //console.log("current time : ", this.time);
     this.display_time();
   },
+  // Set the time and stop the timer
   this.set_time = function(time_to_set = 0){
     this.stop();
     this.time = time_to_set;
-    console.log("current time : ", this.time);
+    //console.log("current time : ", this.time);
     this.display_time();
   },
+  // Calculate the time to display
   this.calculate_time = function(time_seconds){
     minutes = parseInt(time_seconds / 60, 10);
     seconds = parseInt(time_seconds % 60, 10);
@@ -202,16 +241,19 @@ function Timer(){
 
     return [minutes, seconds]
   },
+  // Display the calculated time
   this.display_time = function(){
     var [minutes, seconds] = this.calculate_time(this.time);
     document.getElementById("timer_display").innerHTML = "" + minutes + ":" + seconds
   },
+  // Set the timer interval
   this.set_timer = function(){
     timer_obj = this;
     this.timer = setInterval(function(){
       timer_obj.update();
     }, 1000)
   }
+  // Update the current time and stop if time's out
   this.update = function(){
     this.change_time(-1);
     if (this.time <= 0) {
