@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kin ball timer</title>
+  <style type="text/css">
+    * + * {
+      margin-top: 1rem;
+    }
+    body {
+      font-size:16px;
+      margin:auto;
+
+      color:#444;
+      width:100%;
+      display:flex;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        color:#c9d1d9;
+        background:#0d1117;
+      }
+    }
+    aside {
+      width:25%;
+      text-align: center;
+      font-size:1.5rem;
+      /*align-self: center;*/
+      padding:1rem;
+    }
+    aside div {
+      border: 1px black solid;
+      padding:0.5rem;
+    }
+    button {
+      font-size:1.15rem;
+    }
+    main {
+      display:flex;
+      width:100%;
+      padding: 1rem;
+    }
+    .timer_container {
+      width:100%;
+      align-self: center;
+      text-align: center;
+      align-content: center;
+    }
+    #timer_display {
+      font-size:10rem;
+    }
+    @media only screen and (min-width: 1200px) {
+      #timer_display {
+        font-size:70vh;
+      }
+    }
+    /*#start {
+
+    }
+    #stop {
+
+    }
+    #save_state {
+
+    }
+    #reset_last {
+
+    }
+    .timer_control {
+
+    }
+    .time_change {
+
+    }
+    .set_time {
+
+    }
+    .timer_states {
+
+    }*/
+  </style>
+</head>
+<body>
+
+<aside>
+  <div class="timer_control">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <p>Running : <span id="running_display">false</span></p>
+  </div>
+
+  <div class="time_change">
+    <button class="js_change_time" data-time-increment="60">+ 1 min</button>
+    <button class="js_change_time" data-time-increment="10">+ 10 sec</button>
+    <button class="js_change_time" data-time-increment="1">+ 1 sec</button>
+    <button class="js_change_time" data-time-increment="-1">- 1 sec</button>
+    <button class="js_change_time" data-time-increment="-10">- 10 sec</button>
+    <button class="js_change_time" data-time-increment="-60">- 1 min</button>
+  </div>
+
+  <div class="set_time">
+    <button class="js_set_time" data-time="900">Set 15:00</button>
+    <button class="js_set_time" data-time="420">Set 7:00</button>
+    <button class="js_set_time" data-time="165">Set 2:45</button>
+    <button class="js_set_time" data-time="0">Set 0:00</button>
+  </div>
+
+  <div class="timer_states">
+    <button id="save_state">Save state</button>
+    <button id="reset_last">Reset to last state</button>
+    <p>Last state : <span id="last_state_display"></span></p>
+  </div>
+
+</aside>
+<main>
+  <div class="timer_container">
+    <span id="timer_display">00:00</span>
+  </div>
+</main>
+<script type="text/javascript">
+var timer = new Timer();
+
+document.getElementById("start").addEventListener('click', function(e){
+  timer.start();
+});
+document.getElementById("stop").addEventListener('click', function(e){
+  timer.stop();
+});
+document.getElementById("reset_last").addEventListener('click', function(e){
+  timer.reset_last();
+});
+document.getElementById("save_state").addEventListener('click', function(e){
+  timer.save_state();
+});
+
+document.querySelectorAll(".js_change_time").forEach(function(btn){
+  btn.addEventListener('click', function(e){
+    timer.change_time(parseInt(e.currentTarget.getAttribute("data-time-increment")));
+  });
+});
+document.querySelectorAll(".js_set_time").forEach(function(btn){
+  btn.addEventListener('click', function(e){
+    timer.set_time(parseInt(e.currentTarget.getAttribute("data-time")));
+  });
+});
+
+function Timer(){
+  this.timer = null,
+  this.time = 0,
+  this.last_state = null,
+  this.running = false,
+  this.init = function(){
+    this.set_time(0);
+  },
+  this.start = function(){
+    if (!this.running && this.time > 0) {
+      this.set_timer();
+      this.running = true;
+      document.getElementById("running_display").innerHTML = this.running;
+    }
+  },
+  this.stop = function(){
+    if (this.time) {
+      clearInterval(this.timer);
+    }
+    this.timer = null;
+    this.running = false;
+    document.getElementById("running_display").innerHTML = this.running;
+  },
+  this.save_state = function(){
+    this.last_state = this.time;
+    console.log("last_state", this.last_state);
+
+    var [minutes, seconds] = this.calculate_time(this.last_state);
+    document.getElementById("last_state_display").innerHTML = "" + minutes + ":" + seconds;
+  },
+  this.reset_last = function(){
+    console.log("last_state", this.last_state);
+    if (this.last_state) {
+      this.time = this.last_state;
+      this.display_time();
+    }
+  },
+  this.change_time = function(time_increment = 0){
+    this.time += time_increment;
+    console.log("current time : ", this.time);
+    this.display_time();
+  },
+  this.set_time = function(time_to_set = 0){
+    this.stop();
+    this.time = time_to_set;
+    console.log("current time : ", this.time);
+    this.display_time();
+  },
+  this.calculate_time = function(time_seconds){
+    minutes = parseInt(time_seconds / 60, 10);
+    seconds = parseInt(time_seconds % 60, 10);
+
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return [minutes, seconds]
+  },
+  this.display_time = function(){
+    var [minutes, seconds] = this.calculate_time(this.time);
+    document.getElementById("timer_display").innerHTML = "" + minutes + ":" + seconds
+  },
+  this.set_timer = function(){
+    timer_obj = this;
+    this.timer = setInterval(function(){
+      timer_obj.update();
+    }, 1000)
+  }
+  this.update = function(){
+    this.change_time(-1);
+    if (this.time <= 0) {
+      clearInterval(this.timer);
+      //@@TODO buzzer
+    }
+  }
+  ;
+  this.init();
+  return this;
+}
+
+
+</script>
+</body>
+</html>
