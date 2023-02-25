@@ -222,6 +222,9 @@ function Timer(){
   this.change_time = function(time_increment = 0){
     this.time += time_increment;
     //console.log("current time : ", this.time);
+    if (this.time < 0) {
+      this.time = 0;
+    }
     this.display_time();
   },
   // Set the time and stop the timer
