@@ -27,3 +27,5 @@
 * `-` pour -1 sec
 * `Shift +` pour +10 sec
 * `Shift -` pour -10 sec
+* `m` pour ouvrir/fermer le menu
+* `b` pour activer/désactiver le buzzer

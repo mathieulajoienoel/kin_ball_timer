@@ -220,6 +220,8 @@
       <span id="color_mode__original">Original <i class="color_tile color_tile__black"></i></span>
       <span id="color_mode__kinball">Kin-ball <i class="color_tile color_tile__pink"></i></span>
     </button>
+    <label for="buzzer_toggle">BEEP</label>
+    <input type="checkbox" id="buzzer_toggle" checked>
   </div>
 
 </aside>
@@ -267,6 +269,9 @@ document.getElementById("reset_last").addEventListener('click', function(e){
 });
 document.getElementById("save_state").addEventListener('click', function(e){
   timer.save_state();
+});
+document.getElementById("buzzer_toggle").addEventListener('change', function(e){
+  timer.toggle_buzzer();
 });
 // Setup time change buttons
 document.querySelectorAll(".js_change_time").forEach(function(btn){
@@ -341,6 +346,9 @@ document.addEventListener('keypress', function(e){
   if (e.keyCode == 109 || (e.key && e.key == 'm')) {
     toggle_menu();
   }
+  if (e.keyCode == 98 || (e.key && e.key == 'b')) {
+    timer.toggle_buzzer();
+  }
 });
 
 // The main timer
@@ -353,6 +361,8 @@ function Timer(){
   this.last_state = null,
   // Is the timer running
   this.running = false,
+  // Play a buzzer sound when time reaches 0
+  this.buzzer_enabled = true,
   // Initialize the timer and its buttons
   this.init = function(){
     this.set_time(0);
@@ -389,6 +399,10 @@ function Timer(){
       timer_state_display.classList.remove('running');
     }
     //document.getElementById("running_display").innerHTML = this.running;
+  },
+  this.toggle_buzzer = function(){
+    this.buzzer_enabled = !this.buzzer_enabled;
+    document.getElementById('buzzer_toggle').checked = this.buzzer_enabled;
   },
   // Save the current state
   this.save_state = function(){
@@ -472,7 +486,13 @@ function Timer(){
     this.change_time(-1, false);
     if (this.time <= 0) {
       clearInterval(this.timer);
-      //@@TODO buzzer
+      this.stop();
+
+      if(this.buzzer_enabled){
+        // Play audio buzzer
+        var audio = new Audio('mixkit-ice-hockey-sports-buzzer-941.mp3');
+        audio.play();
+      }
     }
   }
   ;
