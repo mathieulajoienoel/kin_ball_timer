@@ -27,7 +27,6 @@
       }
     }
     aside {
-
       /*width:25%;*/
       width:30rem;
       text-align: center;
@@ -88,9 +87,9 @@
       #timer_display {
         font-size:70vh;
       }
-      #menu.hidden ~main #timer_display {
-        font-size:80vh;
-      }
+      /*#menu.hidden ~main #timer_display {
+        font-size:70vh;
+      }*/
     }
     #toggle_menu {
       position:absolute;
@@ -123,6 +122,7 @@
       width:100%;
       bottom:0;
       left:0;
+      pointer-events: none;
     }
     @media only screen and (max-width: 1200px) {
       footer {
@@ -136,13 +136,14 @@
       vertical-align: middle;
     }
     .color_tile__black{
-      background-color: black;
+      background-color: #222;
     }
     .color_tile__pink{
       background-color: #ff3399;
     }
     .color_mode__kinball {
-      background-color: #ff3399;
+      /*background-color: #ff3399;*/
+      background-color: #222;
     }
 
     #color_mode__original {
@@ -155,7 +156,21 @@
       display:inline-block;
     }
     .color_mode__kinball footer{
-      color:#222;
+      /*color:#222;*/
+      color: #ff3399;
+    }
+    .color_mode__kinball button{
+      background-color: #ff3399;
+    }
+    .color_mode__kinball #timer_display{
+      color: #ff3399;
+    }
+
+    .color_mode__kinball aside div {
+      border: 1px #ff3399 solid;
+    }
+    .color_mode__kinball aside p {
+      color:#ff3399;
     }
   </style>
 </head>
@@ -165,7 +180,7 @@
 <aside id="menu">
 
   <div class="timer_control">
-    <button id="toggle_timer_state">
+    <button id="toggle_timer_state" title="[Espace]">
       <span class="play">Play ▶</span>
       <span class="pause">Pause ⏸</span>
     </button>
@@ -177,27 +192,27 @@
     </div>-->
   </div>
 
+  <div class="timer_states">
+    <button id="save_state" title="[S]">Save 💾</button>
+    <button id="reset_last" class="hidden" title="[R]">Reset 🔄</button>
+    <p id="last_saved">Last saved : <span id="last_state_display"></span></p>
+  </div>
+
   <div class="time_change">
-      <button class="js_change_time" data-time-increment="60">+ 1 min</button>
-      <button class="js_change_time" data-time-increment="10">+ 10 sec</button>
-      <button class="js_change_time" data-time-increment="1">+ 1 sec</button>
+      <button class="js_change_time" data-time-increment="60"> + 1 min</button>
+      <button class="js_change_time" data-time-increment="10" title="[Shift +]"> + 10 sec</button>
+      <button class="js_change_time" data-time-increment="1" title="[+]"> + 1 sec</button>
       <br>
-      <button class="js_change_time" data-time-increment="-60">- 1 min</button>
-      <button class="js_change_time" data-time-increment="-10">- 10 sec</button>
-      <button class="js_change_time" data-time-increment="-1">- 1 sec</button>
+      <button class="js_change_time" data-time-increment="-60"> - 1 min</button>
+      <button class="js_change_time" data-time-increment="-10" title="[Shift -]"> - 10 sec</button>
+      <button class="js_change_time" data-time-increment="-1" title="[-]">- 1 sec</button>
   </div>
 
   <div class="set_time">
-    <button class="js_set_time" data-time="900">Set 15:00</button>
-    <button class="js_set_time" data-time="420">Set 7:00</button>
-    <button class="js_set_time" data-time="165">Set 2:45</button>
-    <button class="js_set_time" data-time="0">Set 0:00</button>
-  </div>
-
-  <div class="timer_states">
-    <button id="save_state">Save 💾</button>
-    <button id="reset_last" class="hidden">Reset 🔄</button>
-    <p id="last_saved">Last saved : <span id="last_state_display"></span></p>
+    <button class="js_set_time" data-time="900" title="[3]"> Set 15:00</button>
+    <button class="js_set_time" data-time="420" title="[2]"> Set 7:00</button>
+    <button class="js_set_time" data-time="165" title="[1]"> Set 2:45</button>
+    <button class="js_set_time" data-time="0" title="[0]"> Set 0:00</button>
   </div>
 
   <div class="color_mode">
@@ -213,24 +228,26 @@
     <span id="timer_display">00:00</span>
   </div>
 </main>
-<footer>
+<!--<footer>
   <p>
     Défi Kin-Ball Québec édition spéciale Mario Demers, 18 mars 2023<br>30<sup>e</sup> anniversaire Kin-Ball Québec-Appalaches
   </p>
-</footer>
+</footer>-->
 
 <script type="text/javascript">
 var timer = new Timer();
 
-// Setup buttons
-document.getElementById("toggle_menu").addEventListener('click', function(e){
+function toggle_menu(e){
   var menu = document.getElementById("menu");
   if (menu.classList.contains("hidden")) {
     menu.classList.remove("hidden");
   } else {
     menu.classList.add("hidden");
   }
-});
+}
+
+// Setup buttons
+document.getElementById("toggle_menu").addEventListener('click', toggle_menu);
 /*document.getElementById("start").addEventListener('click', function(e){
   timer.start();
 });
@@ -262,6 +279,68 @@ document.querySelectorAll(".js_set_time").forEach(function(btn){
   btn.addEventListener('click', function(e){
     timer.set_time(parseInt(e.currentTarget.getAttribute("data-time")));
   });
+});
+
+document.addEventListener('keypress', function(e){
+  //console.log(e.keyCode);
+  //console.log(e.key);
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
+  //spacebar = play/pause
+  if (e.keyCode == 32 || (e.key && e.key == ' ')) {
+    timer.toggle_timer_state();
+  }
+
+  //s = save
+  if (e.keyCode == 115 || (e.key && e.key == 's')) {
+    timer.save_state();
+  }
+
+  //r = reset
+  if (e.keyCode == 114 || (e.key && e.key == 'r')) {
+    timer.reset_last();
+  }
+
+
+  // Set timer to 0
+  if (e.keyCode == 48 || (e.key && e.key == '0')) {
+    timer.set_time(0);
+  }
+  // Set timer to 2:45
+  if (e.keyCode == 49 || (e.key && e.key == '1')) {
+    timer.set_time(165);
+  }
+  // Set timer to 7:00
+  if (e.keyCode == 50 || (e.key && e.key == '2')) {
+    timer.set_time(420);
+  }
+  // Set timer to 15:00
+  if (e.keyCode == 51 || (e.key && e.key == '3')) {
+    timer.set_time(900);
+  }
+
+  // add 1
+  if (e.keyCode == 51 || (e.key && e.key == '=')) {
+    timer.change_time(1);
+  }
+  // remove 1
+  if (e.keyCode == 51 || (e.key && e.key == '-')) {
+    timer.change_time(-1);
+  }
+  // add 10
+  if (e.keyCode == 51 || (e.key && e.key == '+')) {
+    timer.change_time(10);
+  }
+  // remove 10
+  if (e.keyCode == 51 || (e.key && e.key == '_')) {
+    timer.change_time(-10);
+  }
+
+  // menu toggle
+  if (e.keyCode == 109 || (e.key && e.key == 'm')) {
+    toggle_menu();
+  }
 });
 
 // The main timer

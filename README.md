@@ -14,3 +14,16 @@
 * Set 0:00 : Initializer le décompte à 0 minutes
 * Save state : Sauvegarder en mémoire l'état courant
 * Reset to last state : Réinitialiser le décompte à l'état en mémoire
+
+## Légende des touches : 
+* `Espace` pour play/pause
+* `R` pour reset
+* `S` pour save
+* `0` pour 00:00
+* `1` pour 02:45
+* `2` pour 07:00
+* `3` pour 15:00
+* `+` pour +1 sec
+* `-` pour -1 sec
+* `Shift +` pour +10 sec
+* `Shift -` pour -10 sec
