@@ -54,7 +54,7 @@
       border: 1px #222 solid;
       padding:0.5rem;
     }
-    button {
+    .button {
       border:1px solid #333;
       background-color:#efefef;
       font-size:1.15rem;
@@ -62,7 +62,7 @@
       box-shadow: 1px 1px rgba(0,0,0,0.5);
       transition: border-radius 0.1s, box-shadow 0.1s, transform 0.1s;
     }
-    button:hover {
+    .button:hover {
       border-radius:2px;
       box-shadow: 3px 3px rgba(0,0,0,0.5);
       transform: translate(-1px, -1px);
@@ -91,6 +91,21 @@
         font-size:70vh;
       }*/
     }
+
+    #buzzer_toggle{
+      display:none;
+      visibility: hidden;
+    }
+    #buzzer_toggle:not(#buzzer_toggle:checked) ~label .sound{
+      display:none;
+    }
+    #buzzer_toggle:checked ~label .muted{
+      display:none;
+    }
+    label.button {
+      padding:1px 6px;
+    }
+
     #toggle_menu {
       position:absolute;
       top: 1rem;
@@ -159,7 +174,7 @@
       /*color:#222;*/
       color: #ff3399;
     }
-    .color_mode__kinball button{
+    .color_mode__kinball .button{
       background-color: #ff3399;
     }
     .color_mode__kinball #timer_display{
@@ -180,7 +195,7 @@
 <aside id="menu">
 
   <div class="timer_control">
-    <button id="toggle_timer_state" title="[Espace]">
+    <button id="toggle_timer_state" title="[Espace]" class="button">
       <span class="play">Play ▶</span>
       <span class="pause">Pause ⏸</span>
     </button>
@@ -193,35 +208,40 @@
   </div>
 
   <div class="timer_states">
-    <button id="save_state" title="[S]">Save 💾</button>
-    <button id="reset_last" class="hidden" title="[R]">Reset 🔄</button>
+    <button id="save_state" class="button" title="[S]">Save 💾</button>
+    <button id="reset_last" class="hidden button" title="[R]">Reset 🔄</button>
     <p id="last_saved">Last saved : <span id="last_state_display"></span></p>
   </div>
 
   <div class="time_change">
-      <button class="js_change_time" data-time-increment="60"> + 1 min</button>
-      <button class="js_change_time" data-time-increment="10" title="[Shift +]"> + 10 sec</button>
-      <button class="js_change_time" data-time-increment="1" title="[+]"> + 1 sec</button>
+      <button class="js_change_time button" data-time-increment="60"> + 1 min</button>
+      <button class="js_change_time button" data-time-increment="10" title="[Shift +]"> + 10 sec</button>
+      <button class="js_change_time button" data-time-increment="1" title="[+]"> + 1 sec</button>
       <br>
-      <button class="js_change_time" data-time-increment="-60"> - 1 min</button>
-      <button class="js_change_time" data-time-increment="-10" title="[Shift -]"> - 10 sec</button>
-      <button class="js_change_time" data-time-increment="-1" title="[-]">- 1 sec</button>
+      <button class="js_change_time button" data-time-increment="-60"> - 1 min</button>
+      <button class="js_change_time button" data-time-increment="-10" title="[Shift -]"> - 10 sec</button>
+      <button class="js_change_time button" data-time-increment="-1" title="[-]">- 1 sec</button>
   </div>
 
   <div class="set_time">
-    <button class="js_set_time" data-time="900" title="[3]"> Set 15:00</button>
-    <button class="js_set_time" data-time="420" title="[2]"> Set 7:00</button>
-    <button class="js_set_time" data-time="165" title="[1]"> Set 2:45</button>
-    <button class="js_set_time" data-time="0" title="[0]"> Set 0:00</button>
+    <button class="js_set_time button" data-time="900" title="[3]"> Set 15:00</button>
+    <button class="js_set_time button" data-time="420" title="[2]"> Set 7:00</button>
+    <button class="js_set_time button" data-time="165" title="[1]"> Set 2:45</button>
+    <button class="js_set_time button" data-time="0" title="[0]"> Set 0:00</button>
   </div>
 
   <div class="color_mode">
-    <button id="js_toggle_color_mode">
+    <button id="js_toggle_color_mode" class="button">
       <span id="color_mode__original">Original <i class="color_tile color_tile__black"></i></span>
       <span id="color_mode__kinball">Kin-ball <i class="color_tile color_tile__pink"></i></span>
     </button>
-    <label for="buzzer_toggle">BEEP</label>
-    <input type="checkbox" id="buzzer_toggle" checked>
+    <br>
+    <input type="checkbox" id="buzzer_toggle" checked title="[B]">
+    <label for="buzzer_toggle" class="button">
+      <span class="sound">🔊</span>
+      <span class="muted">🔈</span>
+    </label>
+
   </div>
 
 </aside>
