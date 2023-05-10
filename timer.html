@@ -12,6 +12,7 @@
       display:none;
     }
     body {
+      font-family: 'Arial';
       font-size:16px;
       margin:auto;
       background-color:#fefefe;
@@ -156,22 +157,39 @@
     .color_tile__pink{
       background-color: #ff3399;
     }
+    .color_tile__green{
+      background-color: #00B050;
+    }
     .color_mode__kinball {
       /*background-color: #ff3399;*/
       background-color: #222;
     }
+    .color_mode__dropball {
+      /*background-color: #ff3399;*/
+      background-color: #00B050;
+    }
+    #js_toggle_color_mode span {
+      margin:0;
+      padding:0;
+    }
 
-    #color_mode__original {
+    #color_mode__original, #color_mode__dropball {
       display:none;
     }
-    .color_mode__kinball #color_mode__kinball {
+    .color_mode__kinball #color_mode__kinball, .color_mode__kinball #color_mode__original {
       display:none;
     }
-    .color_mode__kinball #color_mode__original {
+    .color_mode__dropball #color_mode__dropball, .color_mode__dropball #color_mode__kinball {
+      display:none;
+    }
+    .color_mode__kinball #color_mode__dropball {
       display:inline-block;
     }
+    .color_mode__dropball #color_mode__original {
+      display:inline-block;
+    }
+
     .color_mode__kinball footer{
-      /*color:#222;*/
       color: #ff3399;
     }
     .color_mode__kinball .button{
@@ -180,13 +198,28 @@
     .color_mode__kinball #timer_display{
       color: #ff3399;
     }
-
     .color_mode__kinball aside div {
       border: 1px #ff3399 solid;
     }
     .color_mode__kinball aside p {
       color:#ff3399;
     }
+/*
+    .color_mode__dropball footer{
+      color: #00B050;
+    }
+    .color_mode__dropball .button{
+      background-color: #00B050;
+    }
+    .color_mode__dropball #timer_display{
+      color: #00B050;
+    }
+    .color_mode__dropball aside div {
+      border: 1px #00B050 solid;
+    }
+    .color_mode__dropball aside p {
+      color:#00B050;
+    }*/
   </style>
 </head>
 <body>
@@ -234,6 +267,7 @@
     <button id="js_toggle_color_mode" class="button">
       <span id="color_mode__original">Original <i class="color_tile color_tile__black"></i></span>
       <span id="color_mode__kinball">Kin-ball <i class="color_tile color_tile__pink"></i></span>
+      <span id="color_mode__dropball">Drop-ball <i class="color_tile color_tile__green"></i></span>
     </button>
     <br>
     <input type="checkbox" id="buzzer_toggle" checked title="[B]">
@@ -280,8 +314,30 @@ document.getElementById("toggle_timer_state").addEventListener('click', function
   timer.toggle_timer_state();
 });
 
+var state = 0;
 document.getElementById("js_toggle_color_mode").addEventListener('click', function(e){
-  document.getElementsByTagName('body')[0].classList.toggle("color_mode__kinball")
+  state++;
+  if(state > 2){
+    state = 0;
+  }
+  var body = document.getElementsByTagName('body')[0];
+  switch(state){
+    case 0:
+      body.classList.add("color_mode__original");
+      body.classList.remove("color_mode__kinball");
+      body.classList.remove("color_mode__dropball");
+      break;
+    case 1:
+      body.classList.remove("color_mode__original");
+      body.classList.add("color_mode__kinball");
+      body.classList.remove("color_mode__dropball");
+      break;
+    case 2:
+      body.classList.remove("color_mode__original");
+      body.classList.remove("color_mode__kinball");
+      body.classList.add("color_mode__dropball");
+      break;
+  }
 });
 
 document.getElementById("reset_last").addEventListener('click', function(e){
