@@ -11,42 +11,9 @@ function toggle_menu(e){
 
 // Setup buttons
 document.getElementById("toggle_menu").addEventListener('click', toggle_menu);
-/*document.getElementById("start").addEventListener('click', function(e){
-  timer.start();
-});
-document.getElementById("stop").addEventListener('click', function(e){
-  timer.stop();
-});*/
 document.getElementById("toggle_timer_state").addEventListener('click', function(e){
   timer.toggle_timer_state();
 });
-
-/*var state = 0;
-document.getElementById("js_toggle_color_mode").addEventListener('click', function(e){
-  state++;
-  if(state > 2){
-    state = 0;
-  }
-  var body = document.getElementsByTagName('body')[0];
-  switch(state){
-    case 0:
-      body.classList.add("color_mode__light");
-      body.classList.remove("color_mode__kinball");
-      body.classList.remove("color_mode__dropball");
-      break;
-    case 1:
-      body.classList.remove("color_mode__light");
-      body.classList.add("color_mode__kinball");
-      body.classList.remove("color_mode__dropball");
-      break;
-    case 2:
-      body.classList.remove("color_mode__light");
-      body.classList.remove("color_mode__kinball");
-      body.classList.add("color_mode__dropball");
-      break;
-  }
-});*/
-
 document.getElementById("reset_last").addEventListener('click', function(e){
   timer.reset_last();
 });
@@ -162,7 +129,6 @@ function Timer(){
     if (!this.running && this.time > 0) {
       this.set_timer();
       this.running = true;
-      //document.getElementById("running_display").innerHTML = this.running;
       var timer_state_display = document.getElementById("toggle_timer_state");
       if (!timer_state_display.classList.contains('running')) {
         timer_state_display.classList.add('running');
@@ -180,7 +146,6 @@ function Timer(){
     if (timer_state_display.classList.contains('running')) {
       timer_state_display.classList.remove('running');
     }
-    //document.getElementById("running_display").innerHTML = this.running;
   },
   this.toggle_buzzer = function(){
     this.buzzer_enabled = !this.buzzer_enabled;
@@ -189,7 +154,6 @@ function Timer(){
   // Save the current state
   this.save_state = function(){
     this.last_state = this.time;
-    //console.log("last_state", this.last_state);
 
     var [minutes, seconds] = this.calculate_time(this.last_state);
     document.getElementById("last_state_display").innerHTML = "" + minutes + ":" + seconds;
@@ -197,7 +161,6 @@ function Timer(){
   },
   // Reset to the last saved state
   this.reset_last = function(){
-    //console.log("last_state", this.last_state);
     if (this.last_state !== null) {
       this.stop();
       this.time = this.last_state;
@@ -225,7 +188,6 @@ function Timer(){
   // Change the time
   this.change_time = function(time_increment = 0, stop_timer = false){
     this.time += time_increment;
-    //console.log("current time : ", this.time);
     if (this.time < 0) {
       this.time = 0;
     }
@@ -238,7 +200,6 @@ function Timer(){
   this.set_time = function(time_to_set = 0){
     this.stop();
     this.time = time_to_set;
-    //console.log("current time : ", this.time);
     this.display_time();
   },
   // Calculate the time to display
@@ -272,7 +233,7 @@ function Timer(){
 
       if(this.buzzer_enabled){
         // Play audio buzzer
-        var audio = new Audio('assets/buzzer.mp3');
+        var audio = new Audio('assets/sounds/buzzer.mp3');
         audio.play();
       }
     }
@@ -296,7 +257,6 @@ function ColorModeManager(){
   };
   this.bind_buttons = function (){
     let color_mode_buttons = document.querySelectorAll(".js_color_mode_button");
-    console.log(color_mode_buttons);
     if(color_mode_buttons){
       color_mode_buttons.forEach(function(element,k){
         element.addEventListener("click", function(e){
