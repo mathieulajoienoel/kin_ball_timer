@@ -15,7 +15,7 @@
 * Save state : Sauvegarder en mémoire l'état courant
 * Reset to last state : Réinitialiser le décompte à l'état en mémoire
 
-## Légende des touches : 
+## Légende des touches :
 * `Espace` pour play/pause
 * `R` pour reset
 * `S` pour save
@@ -29,3 +29,6 @@
 * `Shift -` pour -10 sec
 * `m` pour ouvrir/fermer le menu
 * `b` pour activer/désactiver le buzzer
+
+# Dev
+Pour voir le fichier dans le browser (de WSL à Windows) : `wslpath -w "$PWD"`
